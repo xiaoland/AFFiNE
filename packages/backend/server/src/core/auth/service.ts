@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotAcceptableException,
-  NotFoundException,
   OnApplicationBootstrap,
 } from '@nestjs/common';
 import { PrismaClient, type User } from '@prisma/client';
@@ -20,19 +19,26 @@ import { UserService } from '../user/service';
 import type { CurrentUser } from './current-user';
 
 export function parseAuthUserSeqNum(value: any) {
+  let seq: number = 0;
   switch (typeof value) {
     case 'number': {
-      return value;
+      seq = value;
+      break;
     }
     case 'string': {
-      value = Number.parseInt(value);
-      return Number.isNaN(value) ? 0 : value;
+      const result = value.match(/^([\d{0, 10}])$/);
+      if (result?.[1]) {
+        seq = Number(result[1]);
+      }
+      break;
     }
 
     default: {
-      return 0;
+      seq = 0;
     }
   }
+
+  return Math.max(0, seq);
 }
 
 export function sessionUser(
@@ -89,7 +95,7 @@ export class AuthService implements OnApplicationBootstrap {
     email: string,
     password: string
   ): Promise<CurrentUser> {
-    const user = await this.getUserByEmail(email);
+    const user = await this.user.findUserByEmail(email);
 
     if (user) {
       throw new BadRequestException('Email was taken');
@@ -110,12 +116,12 @@ export class AuthService implements OnApplicationBootstrap {
     const user = await this.user.findUserWithHashedPasswordByEmail(email);
 
     if (!user) {
-      throw new NotFoundException('User Not Found');
+      throw new NotAcceptableException('Invalid sign in credentials');
     }
 
     if (!user.password) {
       throw new NotAcceptableException(
-        'User Password is not set. Should login throw email link.'
+        'User Password is not set. Should login through email link.'
       );
     }
 
@@ -125,29 +131,32 @@ export class AuthService implements OnApplicationBootstrap {
     );
 
     if (!passwordMatches) {
-      throw new NotAcceptableException('Incorrect Password');
+      throw new NotAcceptableException('Invalid sign in credentials');
     }
 
     return sessionUser(user);
   }
 
-  async getUserWithCache(token: string, seq = 0) {
-    const cacheKey = `session:${token}:${seq}`;
-    let user = await this.cache.get<CurrentUser | null>(cacheKey);
+  async getUser(token: string, seq = 0) {
+    const cacheKey = `session:${token}`;
+    let user = await this.cache.mapGet<CurrentUser | null>(
+      cacheKey,
+      String(seq)
+    );
     if (user) {
       return user;
     }
 
-    user = await this.getUser(token, seq);
+    user = await this.getUserFromDB(token, seq);
 
     if (user) {
-      await this.cache.set(cacheKey, user);
+      await this.cache.mapSet(cacheKey, String(seq), user);
     }
 
     return user;
   }
 
-  async getUser(token: string, seq = 0): Promise<CurrentUser | null> {
+  async getUserFromDB(token: string, seq = 0): Promise<CurrentUser | null> {
     const session = await this.getSession(token);
 
     // no such session
@@ -197,7 +206,16 @@ export class AuthService implements OnApplicationBootstrap {
     // Session
     //   | { user: LimitedUser { email, avatarUrl }, expired: true }
     //   | { user: User, expired: false }
-    return users.map(sessionUser);
+    return session.userSessions
+      .map(userSession => {
+        // keep users in the same order as userSessions
+        const user = users.find(({ id }) => id === userSession.userId);
+        if (!user) {
+          return null;
+        }
+        return sessionUser(user);
+      })
+      .filter(Boolean) as CurrentUser[];
   }
 
   async signOut(token: string, seq = 0) {
@@ -208,6 +226,8 @@ export class AuthService implements OnApplicationBootstrap {
       if (session.userSessions.length <= seq) {
         return session;
       }
+
+      await this.cache.delete(`session:${token}`);
 
       await this.db.userSession.deleteMany({
         where: { id: session.userSessions[seq].id },
@@ -314,12 +334,8 @@ export class AuthService implements OnApplicationBootstrap {
     });
   }
 
-  async getUserByEmail(email: string) {
-    return this.user.findUserByEmail(email);
-  }
-
-  async changePassword(email: string, newPassword: string): Promise<User> {
-    const user = await this.getUserByEmail(email);
+  async changePassword(id: string, newPassword: string): Promise<User> {
+    const user = await this.user.findUserById(id);
 
     if (!user) {
       throw new BadRequestException('Invalid email');
@@ -338,11 +354,7 @@ export class AuthService implements OnApplicationBootstrap {
   }
 
   async changeEmail(id: string, newEmail: string): Promise<User> {
-    const user = await this.db.user.findUnique({
-      where: {
-        id,
-      },
-    });
+    const user = await this.user.findUserById(id);
 
     if (!user) {
       throw new BadRequestException('Invalid email');
