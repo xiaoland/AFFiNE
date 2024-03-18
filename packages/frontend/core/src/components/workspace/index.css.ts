@@ -22,7 +22,7 @@ export const appStyle = style({
       inset: 0,
       opacity: `var(--affine-noise-opacity, 0)`,
       backgroundRepeat: 'repeat',
-      backgroundSize: '3%',
+      backgroundSize: '50px',
       // todo: figure out how to use vanilla-extract webpack plugin to inject img url
       backgroundImage: `var(--noise-background)`,
     },
@@ -30,7 +30,7 @@ export const appStyle = style({
 });
 globalStyle(`html[data-theme="light"] ${appStyle}`, {
   vars: {
-    '--affine-noise-opacity': '0.35',
+    '--affine-noise-opacity': '0.2',
   },
 });
 globalStyle(`html[data-theme="dark"] ${appStyle}`, {
@@ -53,11 +53,15 @@ export const mainContainerStyle = style({
   overflow: 'hidden',
   maxWidth: '100%',
   selectors: {
+    '&[data-client-border="true"]': {
+      borderRadius: 6,
+    },
     '&[data-show-padding="true"]': {
       margin: '8px',
+      marginLeft: 0,
       overflow: 'hidden',
-      // todo: is this performance intensive?
-      filter: 'drop-shadow(0px 0px 4px rgba(66,65,73,.14))',
+      // TODO: not match with design's shadow, theme missing
+      boxShadow: '0px 0px 4px rgba(66,65,73,.14)',
       '@media': {
         print: {
           overflow: 'visible',

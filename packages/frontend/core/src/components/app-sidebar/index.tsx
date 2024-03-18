@@ -27,7 +27,8 @@ import {
 import { SidebarHeader } from './sidebar-header';
 
 export type AppSidebarProps = PropsWithChildren<{
-  hasBackground?: boolean;
+  clientBorder?: boolean;
+  translucentUI?: boolean;
 }>;
 
 export type History = {
@@ -38,7 +39,11 @@ export type History = {
 const MAX_WIDTH = 480;
 const MIN_WIDTH = 256;
 
-export function AppSidebar(props: AppSidebarProps): ReactElement {
+export function AppSidebar({
+  children,
+  clientBorder,
+  translucentUI,
+}: AppSidebarProps): ReactElement {
   const [open, setOpen] = useAtom(appSidebarOpenAtom);
   const [width, setWidth] = useAtom(appSidebarWidthAtom);
   const [floating, setFloating] = useAtom(appSidebarFloatingAtom);
@@ -71,9 +76,9 @@ export function AppSidebar(props: AppSidebarProps): ReactElement {
     };
   }, [open, setFloating, setOpen, width]);
 
-  const transparent = environment.isDesktop && !props.hasBackground;
   const isMacosDesktop = environment.isDesktop && environment.isMacOs;
-  const hasRightBorder = !environment.isDesktop || !transparent;
+  const hasRightBorder =
+    !environment.isDesktop || (!clientBorder && !translucentUI);
 
   return (
     <>
@@ -89,17 +94,17 @@ export function AppSidebar(props: AppSidebarProps): ReactElement {
         onResizing={setResizing}
         onWidthChange={setWidth}
         className={navWrapperStyle}
-        resizeHandleVerticalPadding={transparent ? 16 : 0}
-        data-transparent={transparent}
+        resizeHandleOffset={clientBorder ? 8 : 0}
+        resizeHandleVerticalPadding={clientBorder ? 16 : 0}
+        data-transparent
         data-has-border={hasRightBorder}
         data-testid="app-sidebar-wrapper"
         data-is-macos-electron={isMacosDesktop}
-        data-has-background={environment.isDesktop && props.hasBackground}
       >
         <nav className={navStyle} data-testid="app-sidebar">
           <SidebarHeader />
           <div className={navBodyStyle} data-testid="sliderBar-inner">
-            {props.children}
+            {children}
           </div>
         </nav>
       </ResizePanel>

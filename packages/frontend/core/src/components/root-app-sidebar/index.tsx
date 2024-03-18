@@ -168,13 +168,8 @@ export const RootAppSidebar = ({
 
   return (
     <AppSidebar
-      hasBackground={
-        !(
-          appSettings.enableBlurBackground &&
-          environment.isDesktop &&
-          environment.isMacOs
-        )
-      }
+      clientBorder={appSettings.clientBorder}
+      translucentUI={appSettings.enableBlurBackground}
     >
       <MoveToTrash.ConfirmModal
         open={trashConfirmOpen}

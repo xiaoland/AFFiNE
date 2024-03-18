@@ -36,13 +36,14 @@ export interface MainContainerProps extends HTMLAttributes<HTMLDivElement> {
   className?: string;
   padding?: boolean;
   transparent?: boolean;
+  clientBorder?: boolean;
 }
 
 export const MainContainer = forwardRef<
   HTMLDivElement,
   PropsWithChildren<MainContainerProps>
 >(function MainContainer(
-  { className, padding, children, transparent, ...props },
+  { className, padding, children, clientBorder, ...props },
   ref
 ): ReactElement {
   return (
@@ -51,7 +52,8 @@ export const MainContainer = forwardRef<
       className={clsx(mainContainerStyle, className)}
       data-is-macos={environment.isDesktop && environment.isMacOs}
       data-show-padding={!!padding}
-      data-transparent={transparent}
+      data-transparent={false}
+      data-client-border={clientBorder}
       ref={ref}
     >
       {children}
