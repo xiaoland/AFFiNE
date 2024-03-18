@@ -56,12 +56,11 @@ export const mainContainerStyle = style({
   selectors: {
     '&[data-client-border="true"]': {
       borderRadius: 6,
-    },
-    '&[data-show-padding="true"]': {
       margin: '8px',
       overflow: 'hidden',
+      // todo: is this performance intensive?
       // TODO: not match with design's shadow, theme missing
-      boxShadow: '0px 0px 4px rgba(66,65,73,.14)',
+      filter: 'drop-shadow(0px 0px 4px rgba(66,65,73,.14))',
       '@media': {
         print: {
           overflow: 'visible',
@@ -70,10 +69,10 @@ export const mainContainerStyle = style({
         },
       },
     },
-    '&[data-show-padding="true"][data-side-bar-open="true"]': {
+    '&[data-client-border="true"][data-side-bar-open="true"]': {
       marginLeft: 0,
     },
-    '&[data-show-padding="true"]:before': {
+    '&[data-client-border="true"]:before': {
       content: '""',
       position: 'absolute',
       height: '8px',

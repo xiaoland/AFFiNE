@@ -50,7 +50,6 @@ export const MainContainer = forwardRef<
       {...props}
       className={clsx(mainContainerStyle, className)}
       data-is-macos={environment.isDesktop && environment.isMacOs}
-      data-show-padding={!!clientBorder}
       data-transparent={false}
       data-client-border={clientBorder}
       data-side-bar-open={appSideBarOpen}
