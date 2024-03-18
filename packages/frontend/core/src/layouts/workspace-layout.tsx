@@ -179,10 +179,7 @@ export const WorkspaceLayoutInner = ({ children }: PropsWithChildren) => {
               paths={pathGenerator}
             />
           </Suspense>
-          <MainContainer
-            clientBorder={appSettings.clientBorder}
-            padding={appSettings.clientBorder}
-          >
+          <MainContainer clientBorder={appSettings.clientBorder}>
             <Suspense>
               {upgradeStatus?.needUpgrade || upgradeStatus?.upgrading ? (
                 <WorkspaceUpgrade />
