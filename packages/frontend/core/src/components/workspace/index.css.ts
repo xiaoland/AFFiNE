@@ -52,13 +52,13 @@ export const mainContainerStyle = style({
   flex: 1,
   overflow: 'hidden',
   maxWidth: '100%',
+  transition: 'margin-left 0.2s ease',
   selectors: {
     '&[data-client-border="true"]': {
       borderRadius: 6,
     },
     '&[data-show-padding="true"]': {
       margin: '8px',
-      marginLeft: 0,
       overflow: 'hidden',
       // TODO: not match with design's shadow, theme missing
       boxShadow: '0px 0px 4px rgba(66,65,73,.14)',
@@ -69,6 +69,9 @@ export const mainContainerStyle = style({
           borderRadius: '0px',
         },
       },
+    },
+    '&[data-show-padding="true"][data-side-bar-open="true"]': {
+      marginLeft: 0,
     },
     '&[data-show-padding="true"]:before': {
       content: '""',
