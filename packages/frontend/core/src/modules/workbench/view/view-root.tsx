@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom';
 
 import { viewRoutes } from '../../../router';
+import { mixpanel } from '../../../utils';
 import type { View } from '../entities/view';
 import { RouteContainer } from './route-container';
 import { ViewContext } from './use-view';
@@ -36,9 +37,16 @@ export const ViewRoot = ({ view }: { view: View }) => {
   const location = useLiveData(view.location);
 
   useEffect(() => {
-    viewRouter.navigate(location).catch(err => {
-      console.error('navigate error', err);
-    });
+    viewRouter
+      .navigate(location)
+      .catch(err => {
+        console.error('navigate error', err);
+      })
+      .finally(() => {
+        mixpanel.track_pageview({
+          page: location.pathname,
+        });
+      });
   }, [location, view, viewRouter]);
 
   // https://github.com/remix-run/react-router/issues/7375#issuecomment-975431736

@@ -362,6 +362,7 @@ __metadata:
     "@types/bytes": "npm:^3.1.4"
     "@types/image-blob-reduce": "npm:^4.1.4"
     "@types/lodash-es": "npm:^4.17.12"
+    "@types/mixpanel-browser": "npm:^2.49.0"
     "@types/uuid": "npm:^9.0.8"
     "@vanilla-extract/css": "npm:^1.14.1"
     "@vanilla-extract/dynamic": "npm:^2.1.0"
@@ -389,6 +390,7 @@ __metadata:
     lottie-react: "npm:^2.4.0"
     lottie-web: "npm:^5.12.2"
     mime-types: "npm:^2.1.35"
+    mixpanel-browser: "npm:^2.49.0"
     nanoid: "npm:^5.0.6"
     next-themes: "npm:^0.3.0"
     react: "npm:18.2.0"
@@ -465,6 +467,7 @@ __metadata:
     "@emotion/react": "npm:^11.11.4"
     "@pengx17/electron-forge-maker-appimage": "npm:^1.0.2"
     "@toeverything/infra": "workspace:*"
+    "@types/mixpanel-browser": "npm:^2.49.0"
     "@types/uuid": "npm:^9.0.8"
     async-call-rpc: "npm:^6.4.0"
     builder-util-runtime: "npm:^9.2.4"
@@ -481,6 +484,7 @@ __metadata:
     jotai-devtools: "npm:^0.8.0"
     link-preview-js: "npm:^3.0.5"
     lodash-es: "npm:^4.17.21"
+    mixpanel-browser: "npm:^2.49.0"
     nanoid: "npm:^5.0.6"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
@@ -818,9 +822,11 @@ __metadata:
     "@affine/core": "workspace:*"
     "@affine/env": "workspace:*"
     "@juggle/resize-observer": "npm:^3.4.0"
+    "@types/mixpanel-browser": "npm:^2.49.0"
     "@types/react": "npm:^18.2.60"
     "@types/react-dom": "npm:^18.2.19"
     intl-segmenter-polyfill-rs: "npm:^0.1.7"
+    mixpanel-browser: "npm:^2.49.0"
     react: "npm:^18.2.0"
     react-dom: "npm:^18.2.0"
     typescript: "npm:^5.3.3"
@@ -14221,6 +14227,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/mixpanel-browser@npm:^2.49.0":
+  version: 2.49.0
+  resolution: "@types/mixpanel-browser@npm:2.49.0"
+  checksum: 10/8aa9f114098cd9e2b06314586d73934aa83a8116b7de61bd41208728aebd47daa30134a98c4af3d65c4e755fbbdb6c450058a34ad2204305587fbe8e27f844b3
+  languageName: node
+  linkType: hard
+
 "@types/ms@npm:*":
   version: 0.7.34
   resolution: "@types/ms@npm:0.7.34"
@@ -27550,6 +27563,13 @@ __metadata:
     minipass: "npm:^3.0.0"
     yallist: "npm:^4.0.0"
   checksum: 10/ae0f45436fb51344dcb87938446a32fbebb540d0e191d63b35e1c773d47512e17307bf54aa88326cc6d176594d00e4423563a091f7266c2f9a6872cdc1e234d1
+  languageName: node
+  linkType: hard
+
+"mixpanel-browser@npm:^2.49.0":
+  version: 2.49.0
+  resolution: "mixpanel-browser@npm:2.49.0"
+  checksum: 10/46b738792153caa35c083f3e23b208d48fac0f040074d2f36dc95bac49e86729676ffb599b4b50d814231c4ae8170110419e748a1cbe0d5432ea415f0fe8adc4
   languageName: node
   linkType: hard
 

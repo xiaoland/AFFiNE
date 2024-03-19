@@ -59,6 +59,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.version.outputs.APP_VERSION }}
           SKIP_PLUGIN_BUILD: 'true'
           SKIP_NX_CACHE: 'true'
+          MIXPANEL_TOKEN: ${{ secrets.MIXPANEL_TOKEN }}
 
       - name: Upload web artifact
         uses: actions/upload-artifact@v4

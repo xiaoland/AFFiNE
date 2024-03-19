@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react';
+import { wrapCreateBrowserRouter } from '@sentry/react';
 import type { RouteObject } from 'react-router-dom';
 import { createBrowserRouter as reactRouterCreateBrowserRouter } from 'react-router-dom';
 
@@ -92,7 +92,7 @@ export const viewRoutes = [
   },
 ] satisfies [RouteObject, ...RouteObject[]];
 
-const createBrowserRouter = Sentry.wrapCreateBrowserRouter(
+const createBrowserRouter = wrapCreateBrowserRouter(
   reactRouterCreateBrowserRouter
 );
 export const router = createBrowserRouter(workbenchRoutes, {
