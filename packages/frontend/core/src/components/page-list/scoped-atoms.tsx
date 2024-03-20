@@ -191,14 +191,6 @@ export const groupsAtom = atom(get => {
 
   if (groupBy === false) {
     groupBy = undefined;
-  } else if (groupBy === undefined) {
-    groupBy =
-      sorter.key === 'createDate' || sorter.key === 'updatedDate'
-        ? sorter.key
-        : // default sort
-          !sorter.key
-          ? DEFAULT_SORT_KEY
-          : undefined;
   }
   return itemsToItemGroups<ListItem>(sorter.items, groupBy);
 });

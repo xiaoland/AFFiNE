@@ -14,6 +14,7 @@ import { useCallback, useMemo, useRef, useState } from 'react';
 
 import { usePageHelper } from '../../blocksuite/block-suite-page-list/utils';
 import { ListFloatingToolbar } from '../components/list-floating-toolbar';
+import { usePageItemGroupDefinitions } from '../group-definitions';
 import { pageHeaderColsDef } from '../header-col-def';
 import { PageOperationCell } from '../operation-cell';
 import { PageListItemRenderer } from '../page-group';
@@ -180,6 +181,8 @@ export const VirtualizedPageList = ({
     hideFloatingToolbar();
   }, [filteredSelectedPageIds, hideFloatingToolbar, pageMetas, setTrashModal]);
 
+  const group = usePageItemGroupDefinitions();
+
   return (
     <>
       <VirtualizedList
@@ -190,6 +193,7 @@ export const VirtualizedPageList = ({
         atTopStateChange={setHideHeaderCreateNewPage}
         onSelectionActiveChange={setShowFloatingToolbar}
         heading={heading}
+        groupBy={group}
         selectedIds={filteredSelectedPageIds}
         onSelectedIdsChange={setSelectedPageIds}
         items={pageMetasToRender}
