@@ -31,14 +31,39 @@ export type ChatMessage = {
 };
 
 export interface CopilotTextToTextProvider extends CopilotProvider {
-  generateText(messages: ChatMessage[], model: string): Promise<string>;
+  generateText(
+    messages: ChatMessage[],
+    model: string,
+    options: {
+      temperature?: number;
+      maxTokens?: number;
+      signal?: AbortSignal;
+      user?: string;
+    }
+  ): Promise<string>;
   generateTextStream(
     messages: ChatMessage[],
-    model: string
+    model: string,
+    options: {
+      temperature?: number;
+      maxTokens?: number;
+      signal?: AbortSignal;
+      user?: string;
+    }
   ): AsyncIterable<string>;
 }
 
-export interface CopilotTextToEmbeddingProvider extends CopilotProvider {}
+export interface CopilotTextToEmbeddingProvider extends CopilotProvider {
+  generateEmbedding(
+    messages: string[] | string,
+    model: string,
+    options: {
+      dimensions: number;
+      signal?: AbortSignal;
+      user?: string;
+    }
+  ): Promise<number[][]>;
+}
 
 export interface CopilotTextToImageProvider extends CopilotProvider {}
 
