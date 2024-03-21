@@ -1,3 +1,4 @@
+import type { PasswordLimitsType } from '@affine/graphql';
 import { useAFFiNEI18N } from '@affine/i18n/hooks';
 import { passwordStrength } from 'check-password-strength';
 import { type FC, useEffect } from 'react';
@@ -12,15 +13,13 @@ import { Tag } from './tag';
 
 export type Status = 'weak' | 'medium' | 'strong' | 'minimum' | 'maximum';
 
-export const MIN_LENGTH = 8;
-export const MAX_LENGTH = 20;
-
 export const PasswordInput: FC<
   InputProps & {
+    passwordLimits: PasswordLimitsType;
     onPass: (password: string) => void;
     onPrevent: () => void;
   }
-> = ({ onPass, onPrevent, ...inputProps }) => {
+> = ({ passwordLimits, onPass, onPrevent, ...inputProps }) => {
   const t = useAFFiNEI18N();
 
   const [status, setStatus] = useState<Status | null>(null);
@@ -31,31 +30,34 @@ export const PasswordInput: FC<
   const [password, setPassWord] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const onPasswordChange = useCallback((value: string) => {
-    value = value.trim();
-    setPassWord(value);
-    if (!value) {
-      return setStatus(null);
-    }
-    if (value.length < MIN_LENGTH) {
-      return setStatus('minimum');
-    }
-    if (value.length > MAX_LENGTH) {
-      return setStatus('maximum');
-    }
-    switch (passwordStrength(value).id) {
-      case 0:
-      case 1:
-        setStatus('weak');
-        break;
-      case 2:
-        setStatus('medium');
-        break;
-      case 3:
-        setStatus('strong');
-        break;
-    }
-  }, []);
+  const onPasswordChange = useCallback(
+    (value: string) => {
+      value = value.trim();
+      setPassWord(value);
+      if (!value) {
+        return setStatus(null);
+      }
+      if (value.length < passwordLimits.minLength) {
+        return setStatus('minimum');
+      }
+      if (value.length > passwordLimits.maxLength) {
+        return setStatus('maximum');
+      }
+      switch (passwordStrength(value).id) {
+        case 0:
+        case 1:
+          setStatus('weak');
+          break;
+        case 2:
+          setStatus('medium');
+          break;
+        case 3:
+          setStatus('strong');
+          break;
+      }
+    },
+    [passwordLimits]
+  );
 
   const onConfirmPasswordChange = useCallback((value: string) => {
     setConfirmPassword(value.trim());
@@ -75,14 +77,14 @@ export const PasswordInput: FC<
   useEffect(() => {
     if (
       confirmStatus === 'success' &&
-      password.length >= MIN_LENGTH &&
-      password.length <= MAX_LENGTH
+      password.length >= passwordLimits.minLength &&
+      password.length <= passwordLimits.maxLength
     ) {
       onPass(password);
     } else {
       onPrevent();
     }
-  }, [confirmStatus, onPass, onPrevent, password]);
+  }, [confirmStatus, onPass, onPrevent, password, passwordLimits]);
 
   return (
     <>
@@ -90,11 +92,11 @@ export const PasswordInput: FC<
         className={styles.input}
         type="password"
         size="extraLarge"
-        minLength={MIN_LENGTH}
-        maxLength={MAX_LENGTH}
+        minLength={passwordLimits.minLength}
+        maxLength={passwordLimits.maxLength}
         style={{ marginBottom: 20 }}
         placeholder={t['com.affine.auth.set.password.placeholder']({
-          min: String(MIN_LENGTH),
+          min: String(passwordLimits.minLength),
         })}
         onChange={onPasswordChange}
         endFix={
@@ -103,10 +105,10 @@ export const PasswordInput: FC<
               <Tag
                 status={status}
                 minimum={t['com.affine.auth.set.password.message.minlength']({
-                  min: String(MIN_LENGTH),
+                  min: String(passwordLimits.minLength),
                 })}
                 maximum={t['com.affine.auth.set.password.message.maxlength']({
-                  max: String(MAX_LENGTH),
+                  max: String(passwordLimits.maxLength),
                 })}
               />
             ) : null}
@@ -118,8 +120,8 @@ export const PasswordInput: FC<
         className={styles.input}
         type="password"
         size="extraLarge"
-        minLength={MIN_LENGTH}
-        maxLength={MAX_LENGTH}
+        minLength={passwordLimits.minLength}
+        maxLength={passwordLimits.maxLength}
         placeholder={t['com.affine.auth.set.password.placeholder.confirm']()}
         onChange={onConfirmPasswordChange}
         endFix={

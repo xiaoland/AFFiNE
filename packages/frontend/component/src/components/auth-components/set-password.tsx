@@ -1,3 +1,4 @@
+import type { PasswordLimitsType } from '@affine/graphql';
 import { useAFFiNEI18N } from '@affine/i18n/hooks';
 import { type FC, useCallback, useRef, useState } from 'react';
 
@@ -6,10 +7,11 @@ import { Wrapper } from '../../ui/layout';
 import { PasswordInput } from './password-input';
 
 export const SetPassword: FC<{
+  passwordLimits: PasswordLimitsType;
   showLater?: boolean;
   onLater?: () => void;
   onSetPassword: (password: string) => void;
-}> = ({ onLater, onSetPassword, showLater = false }) => {
+}> = ({ passwordLimits, onLater, onSetPassword, showLater = false }) => {
   const t = useAFFiNEI18N();
 
   const [passwordPass, setPasswordPass] = useState(false);
@@ -19,6 +21,7 @@ export const SetPassword: FC<{
     <>
       <Wrapper marginTop={30} marginBottom={42}>
         <PasswordInput
+          passwordLimits={passwordLimits}
           onPass={useCallback(password => {
             setPasswordPass(true);
             passwordRef.current = password;

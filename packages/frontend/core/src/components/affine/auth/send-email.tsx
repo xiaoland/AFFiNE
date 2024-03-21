@@ -3,14 +3,14 @@ import {
   AuthContent,
   AuthInput,
   BackButton,
-  MAX_LENGTH,
-  MIN_LENGTH,
   ModalHeader,
 } from '@affine/component/auth-components';
 import { pushNotificationAtom } from '@affine/component/notification-center';
 import { Button } from '@affine/component/ui/button';
+import { useAuthPrivilege } from '@affine/core/hooks/affine/use-server-config';
 import { useAsyncCallback } from '@affine/core/hooks/affine-async-hooks';
 import {
+  type PasswordLimitsType,
   sendChangeEmailMutation,
   sendChangePasswordEmailMutation,
   sendSetPasswordEmailMutation,
@@ -37,14 +37,18 @@ const useEmailTitle = (emailType: AuthPanelProps['emailType']) => {
       return t['com.affine.settings.email.action.verify']();
   }
 };
-const useContent = (emailType: AuthPanelProps['emailType'], email: string) => {
+const useContent = (
+  emailType: AuthPanelProps['emailType'],
+  email: string,
+  passwordLimits: PasswordLimitsType
+) => {
   const t = useAFFiNEI18N();
 
   switch (emailType) {
     case 'setPassword':
       return t['com.affine.auth.set.password.message']({
-        min: String(MIN_LENGTH),
-        max: String(MAX_LENGTH),
+        min: String(passwordLimits.minLength),
+        max: String(passwordLimits.maxLength),
       });
     case 'changePassword':
       return t['com.affine.auth.reset.password.message']();
@@ -159,12 +163,13 @@ export const SendEmail = ({
   emailType,
 }: AuthPanelProps) => {
   const t = useAFFiNEI18N();
+  const authPrivilege = useAuthPrivilege();
   const [hasSentEmail, setHasSentEmail] = useState(false);
   const pushNotification = useSetAtom(pushNotificationAtom);
 
   const title = useEmailTitle(emailType);
   const hint = useNotificationHint(emailType);
-  const content = useContent(emailType, email);
+  const content = useContent(emailType, email, authPrivilege.password);
   const buttonContent = useButtonContent(emailType);
   const { loading, sendEmail } = useSendEmail(emailType);
 

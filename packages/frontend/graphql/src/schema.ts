@@ -81,6 +81,15 @@ export enum ServerDeploymentType {
   Selfhosted = 'Selfhosted',
 }
 
+export type PasswordLimitsType = {
+  minLength: number;
+  maxLength: number;
+};
+
+export type AuthPrivilegeType = {
+  password: PasswordLimitsType;
+};
+
 export enum ServerFeature {
   OAuth = 'OAuth',
   Payment = 'Payment',
@@ -700,6 +709,7 @@ export type ServerConfigQuery = {
     name: string;
     features: Array<ServerFeature>;
     type: ServerDeploymentType;
+    authPrivilege: AuthPrivilegeType;
   };
 };
 
