@@ -616,7 +616,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@affine/native@workspace:packages/frontend/native"
   dependencies:
-    "@napi-rs/cli": "npm:3.0.0-alpha.43"
+    "@napi-rs/cli": "npm:3.0.0-alpha.44"
     "@types/node": "npm:^20.11.20"
     "@types/uuid": "npm:^9.0.8"
     ava: "npm:^6.1.1"
@@ -737,7 +737,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@affine/storage@workspace:packages/backend/storage"
   dependencies:
-    "@napi-rs/cli": "npm:3.0.0-alpha.43"
+    "@napi-rs/cli": "npm:3.0.0-alpha.44"
     lib0: "npm:^0.2.89"
     nx: "npm:^18.0.4"
     nx-cloud: "npm:^18.0.0"
@@ -6922,37 +6922,35 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@napi-rs/cli@npm:3.0.0-alpha.43":
-  version: 3.0.0-alpha.43
-  resolution: "@napi-rs/cli@npm:3.0.0-alpha.43"
+"@napi-rs/cli@npm:3.0.0-alpha.44":
+  version: 3.0.0-alpha.44
+  resolution: "@napi-rs/cli@npm:3.0.0-alpha.44"
   dependencies:
     "@napi-rs/cross-toolchain": "npm:^0.0.14"
     "@octokit/rest": "npm:^20.0.2"
     clipanion: "npm:^3.2.1"
     colorette: "npm:^2.0.20"
     debug: "npm:^4.3.4"
-    emnapi: "npm:1.0.0"
+    emnapi: "npm:1.1.0"
     inquirer: "npm:^9.2.13"
     js-yaml: "npm:^4.1.0"
     lodash-es: "npm:^4.17.21"
     semver: "npm:^7.5.4"
     toml: "npm:^3.0.0"
     typanion: "npm:^3.14.0"
-    wasm-sjlj: "npm:^1.0.4"
+    wasm-sjlj: "npm:^1.0.5"
   peerDependencies:
-    "@emnapi/runtime": ^1.0.0
-    emnapi: ^1.0.0
+    "@emnapi/runtime": ^1.1.0
+    emnapi: ^1.1.0
   peerDependenciesMeta:
     "@emnapi/runtime":
-      optional: true
-    "@tybys/wasm-util":
       optional: true
     emnapi:
       optional: true
   bin:
     napi: dist/cli.js
     napi-raw: cli.mjs
-  checksum: 10/d7e404cb2cf8e2fa8b323356135e05d48b6252e9a50ade794e1fdb629b01a76597c20291a48bcd26fe34f85868a1451d22dc1b81a7f6fac0487196ab4cd5eacc
+  checksum: 10/5cc9831ae1b086ad8807ed910bb642f498bd47a46594084961f24a1ba7af08ec2b60bb6eed3f95945e3340a9574f39c91921f3e7e73b7b2854ac209cfb2ee49b
   languageName: node
   linkType: hard
 
@@ -19761,9 +19759,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"emnapi@npm:1.0.0":
-  version: 1.0.0
-  resolution: "emnapi@npm:1.0.0"
+"emnapi@npm:1.1.0":
+  version: 1.1.0
+  resolution: "emnapi@npm:1.1.0"
   dependencies:
     node-gyp: "npm:latest"
   peerDependencies:
@@ -19771,7 +19769,7 @@ __metadata:
   peerDependenciesMeta:
     node-addon-api:
       optional: true
-  checksum: 10/ee73c3898ecb9e6624a8d953e73329a26bbed4e2ecbfab726ea734d422ee8aa231eb2157799ca96adef8626c5299b646866dffcaa95c01e9630b40e254d868ac
+  checksum: 10/823240004c575ad274646e83d6e3af979678e16347f79825cbcff08daea5a3cf115d31b38844e04e0d9ad10ed03d91e6e87f29b29d39d9596dd8cfe891ee9b00
   languageName: node
   linkType: hard
 
@@ -34996,7 +34994,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"wasm-sjlj@npm:^1.0.4":
+"wasm-sjlj@npm:^1.0.5":
   version: 1.0.5
   resolution: "wasm-sjlj@npm:1.0.5"
   dependencies:
