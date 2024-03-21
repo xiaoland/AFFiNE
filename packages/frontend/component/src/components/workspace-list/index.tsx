@@ -85,6 +85,7 @@ const SortableWorkspaceItem = ({
         isOwner={isOwner}
         name={name}
         avatar={avatar}
+        dense
       />
     </div>
   );

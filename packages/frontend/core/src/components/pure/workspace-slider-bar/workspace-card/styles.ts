@@ -1,17 +1,19 @@
 import { displayFlex, textEllipsis } from '@affine/component';
 import { styled } from '@affine/component';
+import { cssVar } from '@toeverything/theme';
 export const StyledSelectorContainer = styled('div')({
-  height: '58px',
+  height: '50px',
   display: 'flex',
   alignItems: 'center',
   padding: '0 6px',
   borderRadius: '8px',
   outline: 'none',
-  width: '100%',
-  color: 'var(--affine-text-primary-color)',
+  width: 'fit-content',
+  maxWidth: '100%',
+  color: cssVar('textPrimaryColor'),
   ':hover': {
     cursor: 'pointer',
-    background: 'var(--affine-hover-color)',
+    background: cssVar('hoverColor'),
   },
 });
 
@@ -24,8 +26,9 @@ export const StyledSelectorWrapper = styled('div')(() => {
 });
 export const StyledWorkspaceName = styled('div')(() => {
   return {
-    lineHeight: '24px',
-    fontWeight: 600,
+    fontSize: cssVar('fontSm'),
+    lineHeight: '22px',
+    fontWeight: 500,
     userSelect: 'none',
     ...textEllipsis(1),
     marginLeft: '4px',
@@ -36,17 +39,16 @@ export const StyledWorkspaceStatus = styled('div')(() => {
   return {
     height: '22px',
     ...displayFlex('flex-start', 'center'),
-    fontSize: 'var(--affine-font-sm)',
-    color: 'var(--affine-text-secondary-color)',
+    fontSize: cssVar('fontXs'),
+    color: cssVar('black50'),
     userSelect: 'none',
     padding: '0 4px',
     gap: '4px',
     zIndex: '1',
     svg: {
-      color: 'var(--affine-icon-color)',
-      fontSize: 'var(--affine-font-base)',
+      color: cssVar('iconSecondary'),
       '&[data-warning-color="true"]': {
-        color: 'var(--affine-error-color)',
+        color: cssVar('errorColor'),
       },
     },
   };

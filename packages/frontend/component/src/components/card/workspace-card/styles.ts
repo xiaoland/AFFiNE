@@ -1,63 +1,4 @@
-import { displayFlex, styled, textEllipsis } from '../../../styles';
-import { IconButton } from '../../../ui/button';
-
-export const StyledWorkspaceInfo = styled('div')(() => {
-  return {
-    marginLeft: '12px',
-    width: '100%',
-  };
-});
-
-export const StyledWorkspaceTitle = styled('div')(() => {
-  return {
-    fontSize: 'var(--affine-font-sm)',
-    fontWeight: 700,
-    lineHeight: '22px',
-    maxWidth: '190px',
-    color: 'var(--affine-text-primary-color)',
-    ...textEllipsis(1),
-  };
-});
-
-export const StyledCard = styled('div')<{
-  active?: boolean;
-}>(({ active }) => {
-  const borderColor = active ? 'var(--affine-primary-color)' : 'transparent';
-  const backgroundColor = active ? 'var(--affine-white-30)' : 'transparent';
-  return {
-    width: '100%',
-    cursor: 'pointer',
-    padding: '12px',
-    borderRadius: '8px',
-    border: `1px solid ${borderColor}`,
-    ...displayFlex('flex-start', 'flex-start'),
-    transition: 'background .2s',
-    alignItems: 'center',
-    position: 'relative',
-    color: 'var(--affine-text-secondary-color)',
-    background: backgroundColor,
-    ':hover': {
-      background: 'var(--affine-hover-color)',
-      '.add-icon': {
-        borderColor: 'var(--affine-primary-color)',
-        color: 'var(--affine-primary-color)',
-      },
-      '.setting-entry': {
-        opacity: 1,
-        pointerEvents: 'auto',
-        backgroundColor: 'var(--affine-white-30)',
-        boxShadow: 'var(--affine-shadow-1)',
-        ':hover': {
-          background:
-            'linear-gradient(0deg, var(--affine-hover-color) 0%, var(--affine-hover-color) 100%), var(--affine-white-30)',
-        },
-      },
-    },
-    '@media (max-width: 720px)': {
-      width: '100%',
-    },
-  };
-});
+import { displayFlex, styled } from '../../../styles';
 
 export const StyledModalHeader = styled('div')(() => {
   return {
@@ -72,34 +13,11 @@ export const StyledModalHeader = styled('div')(() => {
   };
 });
 
-export const StyledSettingLink = styled(IconButton)(() => {
-  return {
-    position: 'absolute',
-    right: '10px',
-    top: '10px',
-    opacity: 0,
-    borderRadius: '4px',
-    color: 'var(--affine-primary-color)',
-    pointerEvents: 'none',
-    transition: 'all .15s',
-    ':hover': {
-      background: 'var(--affine-hover-color)',
-    },
-  };
-});
-
 export const StyledWorkspaceType = styled('div')(() => {
   return {
     ...displayFlex('flex-start', 'center'),
     width: '100%',
     height: '20px',
-  };
-});
-
-export const StyledWorkspaceTitleArea = styled('div')(() => {
-  return {
-    display: 'flex',
-    justifyContent: 'space-between',
   };
 });
 

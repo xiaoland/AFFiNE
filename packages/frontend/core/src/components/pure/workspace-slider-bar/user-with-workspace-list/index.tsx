@@ -21,7 +21,7 @@ import * as styles from './index.css';
 import { UserAccountItem } from './user-account';
 import { AFFiNEWorkspaceList } from './workspace-list';
 
-const SignInItem = () => {
+export const SignInItem = () => {
   const setDisableCloudOpen = useSetAtom(openDisableCloudAlertModalAtom);
 
   const setOpen = useSetAtom(authAtom);
