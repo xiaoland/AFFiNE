@@ -13,44 +13,6 @@ export interface WorkspaceTypeProps {
   isOwner: boolean;
 }
 
-// const WorkspaceType = ({ flavour, isOwner }: WorkspaceTypeProps) => {
-//   const t = useAFFiNEI18N();
-//   if (flavour === WorkspaceFlavour.LOCAL) {
-//     return (
-//       <StyledWorkspaceType>
-//         <StyledWorkspaceTypeEllipse />
-//         <StyledWorkspaceTypeText>{t['Local']()}</StyledWorkspaceTypeText>
-//       </StyledWorkspaceType>
-//     );
-//   }
-
-//   return isOwner ? (
-//     <StyledWorkspaceType>
-//       <StyledWorkspaceTypeEllipse cloud={true} />
-//       <StyledWorkspaceTypeText>
-//         {t['com.affine.brand.affineCloud']()}
-//       </StyledWorkspaceTypeText>
-//     </StyledWorkspaceType>
-//   ) : (
-//     <StyledWorkspaceType>
-//       <StyledWorkspaceTypeEllipse cloud={true} />
-//       <StyledWorkspaceTypeText>
-//         {t['com.affine.brand.affineCloud']()}
-//       </StyledWorkspaceTypeText>
-//       <Divider
-//         orientation="vertical"
-//         size="thinner"
-//         style={{ margin: '0px 8px', height: '7px' }}
-//       />
-//       <Tooltip content={t['com.affine.workspaceType.joined']()}>
-//         <StyledIconContainer>
-//           <CollaborationIcon />
-//         </StyledIconContainer>
-//       </Tooltip>
-//     </StyledWorkspaceType>
-//   );
-// };
-
 export interface WorkspaceCardProps {
   currentWorkspaceId?: string | null;
   meta: WorkspaceMetadata;
