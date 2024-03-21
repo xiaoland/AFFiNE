@@ -3,7 +3,7 @@ import type { WorkspaceFactory } from '@toeverything/infra';
 import {
   AwarenessContext,
   AwarenessProvider,
-  DocEngineServerImpl,
+  DocServerImpl,
   RemoteBlobStorage,
   WorkspaceIdContext,
   WorkspaceScope,
@@ -28,9 +28,7 @@ export class CloudWorkspaceFactory implements WorkspaceFactory {
       .addImpl(RemoteBlobStorage('affine-cloud'), AffineCloudBlobStorage, [
         WorkspaceIdContext,
       ])
-      .addImpl(DocEngineServerImpl, AffineCloudDocEngineServer, [
-        WorkspaceIdContext,
-      ])
+      .addImpl(DocServerImpl, AffineCloudDocEngineServer, [WorkspaceIdContext])
       .addImpl(
         AwarenessProvider('affine-cloud'),
         AffineCloudAwarenessProvider,

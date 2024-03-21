@@ -7,7 +7,9 @@ export interface ByteKV extends ByteKVBehavior {
 export interface ByteKVBehavior {
   get(key: string): Promise<Uint8Array | null> | Uint8Array | null;
   set(key: string, value: Uint8Array): Promise<void> | void;
+  del(key: string): Promise<void> | void;
   keys(): Promise<string[]> | string[];
+  clear(): Promise<void> | void;
 }
 
 export class MemoryByteKV implements ByteKV {
@@ -27,6 +29,12 @@ export class MemoryByteKV implements ByteKV {
       keys: async () => {
         return Array.from(this.db.keys());
       },
+      del: async key => {
+        this.db.delete(key);
+      },
+      clear: async () => {
+        this.db.clear();
+      },
     });
   }
   get(key: string) {
@@ -37,6 +45,12 @@ export class MemoryByteKV implements ByteKV {
   }
   keys() {
     return this.transaction(async tx => tx.keys());
+  }
+  clear() {
+    return this.transaction(async tx => tx.clear());
+  }
+  del(key: string) {
+    return this.transaction(async tx => tx.del(key));
   }
 }
 

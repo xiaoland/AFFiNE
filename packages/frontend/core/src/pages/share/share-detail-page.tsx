@@ -15,11 +15,11 @@ import type { AffineEditorContainer } from '@blocksuite/presets';
 import type { Doc as BlockSuiteDoc } from '@blocksuite/store';
 import type { Doc } from '@toeverything/infra';
 import {
-  DocEngineEventBusImpl,
-  DocEngineMemoryEventBus,
-  DocEngineStorageImpl,
+  DocEventBusImpl,
+  DocStorageImpl,
   EmptyBlobStorage,
   LocalBlobStorage,
+  MemoryDocEventBus,
   PageManager,
   type PageMode,
   RemoteBlobStorage,
@@ -30,7 +30,7 @@ import {
   WorkspaceManager,
   WorkspaceScope,
 } from '@toeverything/infra';
-import { DocEngineReadonlyStorage } from '@toeverything/infra';
+import { ReadonlyDocStorage } from '@toeverything/infra';
 import { useCallback, useEffect, useState } from 'react';
 import type { LoaderFunction } from 'react-router-dom';
 import {
@@ -154,17 +154,17 @@ export const Component = () => {
           ])
           .addImpl(RemoteBlobStorage('static'), StaticBlobStorage)
           .addImpl(
-            DocEngineStorageImpl,
-            new DocEngineReadonlyStorage({
+            DocStorageImpl,
+            new ReadonlyDocStorage({
               [workspaceId]: new Uint8Array(workspaceArrayBuffer),
               [pageId]: new Uint8Array(pageArrayBuffer),
             })
           )
-          .addImpl(DocEngineEventBusImpl, new DocEngineMemoryEventBus());
+          .addImpl(DocEventBusImpl, new MemoryDocEventBus());
       }
     );
 
-    workspace.engine.doc
+    workspace.engine
       .waitForSynced()
       .then(() => {
         const { page } = workspace.services.get(PageManager).open(pageId);

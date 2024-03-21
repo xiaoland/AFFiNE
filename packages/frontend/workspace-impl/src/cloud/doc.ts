@@ -1,5 +1,5 @@
 import { DebugLogger } from '@affine/debug';
-import { type DocEngineServer, throwIfAborted } from '@toeverything/infra';
+import { type DocServer, throwIfAborted } from '@toeverything/infra';
 import type { Socket } from 'socket.io-client';
 
 import { getIoManager } from '../utils/affine-io';
@@ -9,7 +9,7 @@ import { base64ToUint8Array, uint8ArrayToBase64 } from '../utils/base64';
 
 const logger = new DebugLogger('affine-cloud-doc-engine-server');
 
-export class AffineCloudDocEngineServer implements DocEngineServer {
+export class AffineCloudDocEngineServer implements DocServer {
   socket = null as unknown as Socket;
   interruptCb: ((reason: string) => void) | null = null;
   SEND_TIMEOUT = 30000;

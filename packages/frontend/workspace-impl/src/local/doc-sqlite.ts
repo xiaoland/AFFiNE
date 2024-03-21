@@ -3,7 +3,7 @@ import {
   AsyncLock,
   type ByteKV,
   type ByteKVBehavior,
-  type DocEngineStorage,
+  type DocStorage,
 } from '@toeverything/infra';
 import {
   type DBSchema,
@@ -12,14 +12,14 @@ import {
   openDB,
 } from 'idb';
 
-export class SqliteDocStorage implements DocEngineStorage {
+export class SqliteDocStorage implements DocStorage {
   constructor(private readonly workspaceId: string) {}
   readonly doc = new Doc(this.workspaceId);
   readonly syncMetadata = new KV(`${this.workspaceId}:sync-metadata`);
   readonly serverClock = new KV(`${this.workspaceId}:server-clock`);
 }
 
-type DocType = DocEngineStorage['doc'];
+type DocType = DocStorage['doc'];
 
 class Doc implements DocType {
   lock = new AsyncLock();
@@ -74,6 +74,14 @@ class Doc implements DocType {
       this.workspaceId === docId ? undefined : docId
     );
   }
+
+  clear(): void | Promise<void> {
+    return;
+  }
+
+  del(): void | Promise<void> {
+    return;
+  }
 }
 
 interface KvDBSchema extends DBSchema {
@@ -127,12 +135,23 @@ class KV implements ByteKV {
     const store = db.transaction('kv', 'readwrite').objectStore('kv');
     return new KVBehavior(store).keys();
   }
+  async clear() {
+    const db = await this.getDb();
+    const store = db.transaction('kv', 'readwrite').objectStore('kv');
+    return new KVBehavior(store).clear();
+  }
+  async del(key: string) {
+    const db = await this.getDb();
+    const store = db.transaction('kv', 'readwrite').objectStore('kv');
+    return new KVBehavior(store).del(key);
+  }
 }
 
 class KVBehavior implements ByteKVBehavior {
   constructor(
     private readonly store: IDBPObjectStore<KvDBSchema, ['kv'], 'kv', any>
   ) {}
+
   async get(key: string): Promise<Uint8Array | null> {
     const value = await this.store.get(key);
     return value?.val ?? null;
@@ -148,5 +167,19 @@ class KVBehavior implements ByteKVBehavior {
   }
   async keys(): Promise<string[]> {
     return await this.store.getAllKeys();
+  }
+
+  async del(key: string) {
+    if (this.store.delete === undefined) {
+      throw new Error('Cannot set in a readonly transaction');
+    }
+    return await this.store.delete(key);
+  }
+
+  async clear() {
+    if (this.store.clear === undefined) {
+      throw new Error('Cannot set in a readonly transaction');
+    }
+    return await this.store.clear();
   }
 }

@@ -10,12 +10,12 @@ import { WorkspaceMetadataContext } from './context';
 import {
   AwarenessProvider,
   type BlobStorage,
-  DocEngineEventBusImpl,
-  DocEngineMemoryStorage,
-  DocEngineStorageImpl,
+  DocEventBusImpl,
+  DocStorageImpl,
   LocalBlobStorage,
+  MemoryDocStorage,
 } from './engine';
-import { MemoryEventBus } from './engine/doc/event';
+import { MemoryDocEventBus } from './engine/doc/event';
 import { MemoryStorage } from './engine/doc/storage';
 import type { WorkspaceFactory } from './factory';
 import { globalBlockSuiteSchema } from './global-schema';
@@ -30,7 +30,7 @@ export class TestingLocalWorkspaceListProvider
   implements WorkspaceListProvider
 {
   name = WorkspaceFlavour.LOCAL;
-  docStorage = new DocEngineMemoryStorage(this.state);
+  docStorage = new MemoryDocStorage(this.state);
 
   constructor(private readonly state: Memento) {}
 
@@ -138,8 +138,8 @@ export class TestingLocalWorkspaceFactory implements WorkspaceFactory {
         WorkspaceMetadataContext,
         GlobalState,
       ])
-      .addImpl(DocEngineStorageImpl, MemoryStorage, [GlobalState])
-      .addImpl(DocEngineEventBusImpl, MemoryEventBus)
+      .addImpl(DocStorageImpl, MemoryStorage, [GlobalState])
+      .addImpl(DocEventBusImpl, MemoryDocEventBus)
       .addImpl(AwarenessProvider, TestingAwarenessProvider);
   }
 

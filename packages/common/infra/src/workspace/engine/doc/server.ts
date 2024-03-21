@@ -1,4 +1,4 @@
-export interface Server {
+export interface DocServer {
   pullDoc(
     docId: string,
     stateVector: Uint8Array

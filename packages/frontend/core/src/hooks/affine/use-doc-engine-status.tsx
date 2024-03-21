@@ -3,9 +3,8 @@ import { useMemo } from 'react';
 
 export function useDocEngineStatus() {
   const workspace = useService(Workspace);
-  const docEngine = workspace.engine.doc;
 
-  const engineState = useLiveData(docEngine.engineState);
+  const engineState = useLiveData(workspace.engine.docEngineState);
 
   const progress =
     (engineState.total - engineState.syncing) / engineState.total;

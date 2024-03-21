@@ -6,40 +6,35 @@ import type { Doc as YDoc } from 'yjs';
 import { createIdentifier } from '../../../di';
 import { LiveData } from '../../../livedata';
 import { MANUALLY_STOP } from '../../../utils';
-import { type EventBus, EventBusInner } from './event';
+import { type DocEventBus, DocEventBusInner } from './event';
 import { DocEngineLocalPart } from './local';
 import { DocEngineRemotePart } from './remote';
-import type { Server } from './server';
-import { type Storage, StorageInner } from './storage';
+import type { DocServer } from './server';
+import { type DocStorage, DocStorageInner } from './storage';
 
 const logger = new DebugLogger('doc-engine');
 
-export type {
-  Event as DocEngineEvent,
-  EventBus as DocEngineEventBus,
-} from './event';
-export { MemoryEventBus as DocEngineMemoryEventBus } from './event';
-export type { Server as DocEngineServer } from './server';
-export type { Storage as DocEngineStorage } from './storage';
+export type { DocEvent, DocEventBus } from './event';
+export { MemoryDocEventBus } from './event';
+export type { DocServer } from './server';
+export type { DocStorage } from './storage';
 export {
-  MemoryStorage as DocEngineMemoryStorage,
-  ReadonlyStorage as DocEngineReadonlyStorage,
+  MemoryStorage as MemoryDocStorage,
+  ReadonlyStorage as ReadonlyDocStorage,
 } from './storage';
 
-export const DocEngineEventBusImpl =
-  createIdentifier<EventBus>('DocEngineEventBus');
+export const DocEventBusImpl = createIdentifier<DocEventBus>('DocEventBus');
 
-export const DocEngineServerImpl = createIdentifier<Server>('DocEngineServer');
+export const DocServerImpl = createIdentifier<DocServer>('DocServer');
 
-export const DocEngineStorageImpl =
-  createIdentifier<Storage>('DocEngineStorage');
+export const DocStorageImpl = createIdentifier<DocStorage>('DocStorage');
 
 export class DocEngine {
   localPart: DocEngineLocalPart;
   remotePart: DocEngineRemotePart | null;
 
-  storage: StorageInner;
-  eventBus: EventBusInner;
+  storage: DocStorageInner;
+  eventBus: DocEventBusInner;
 
   engineState = LiveData.computed(get => {
     const localState = get(this.localPart.engineState);
@@ -77,14 +72,13 @@ export class DocEngine {
   }
 
   constructor(
-    storage: Storage,
-    eventBus: EventBus,
-    private readonly server?: Server | null,
-    doc?: YDoc
+    storage: DocStorage,
+    eventBus: DocEventBus,
+    private readonly server?: DocServer | null
   ) {
     const clientId = nanoid();
-    this.storage = new StorageInner(storage);
-    this.eventBus = new EventBusInner(eventBus);
+    this.storage = new DocStorageInner(storage);
+    this.eventBus = new DocEventBusInner(eventBus);
     this.localPart = new DocEngineLocalPart(
       clientId,
       this.storage,
@@ -98,10 +92,6 @@ export class DocEngine {
           this.eventBus
         )
       : null;
-
-    if (doc) {
-      this.addDoc(doc);
-    }
   }
 
   abort = new AbortController();
@@ -123,6 +113,12 @@ export class DocEngine {
 
   stop() {
     this.abort.abort(MANUALLY_STOP);
+  }
+
+  async resetSyncStatus() {
+    this.stop();
+    await this.storage.clearSyncMetadata();
+    await this.storage.clearServerClock();
   }
 
   addDoc(doc: YDoc, withSubDocs = true) {

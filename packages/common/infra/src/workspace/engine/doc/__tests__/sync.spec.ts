@@ -5,8 +5,8 @@ import { diffUpdate, encodeStateVectorFromUpdate, mergeUpdates } from 'yjs';
 
 import { AsyncLock } from '../../../../utils';
 import { DocEngine } from '..';
-import { MemoryEventBus } from '../event';
-import type { Server } from '../server';
+import { MemoryDocEventBus } from '../event';
+import type { DocServer } from '../server';
 import { MemoryStorage } from '../storage';
 import { isEmptyUpdate } from '../utils';
 
@@ -27,7 +27,7 @@ class MiniServer {
   }
 }
 
-class MiniServerClient implements Server {
+class MiniServerClient implements DocServer {
   constructor(
     private readonly id: string,
     private readonly server: MiniServer
@@ -118,7 +118,7 @@ describe('sync', () => {
     const server = new MiniServer();
     const engine = new DocEngine(
       storage,
-      new MemoryEventBus(),
+      new MemoryDocEventBus(),
       server.client()
     ).start();
     const doc = new YDoc({ guid: 'a' });
@@ -136,7 +136,7 @@ describe('sync', () => {
     {
       const engine = new DocEngine(
         new MemoryStorage(),
-        new MemoryEventBus(),
+        new MemoryDocEventBus(),
         server.client()
       ).start();
       const doc = new YDoc({ guid: 'a' });
@@ -149,7 +149,7 @@ describe('sync', () => {
     {
       const engine = new DocEngine(
         new MemoryStorage(),
-        new MemoryEventBus(),
+        new MemoryDocEventBus(),
         server.client()
       ).start();
       const doc = new YDoc({ guid: 'a' });
@@ -165,7 +165,7 @@ describe('sync', () => {
       (async () => {
         const engine = new DocEngine(
           new MemoryStorage(),
-          new MemoryEventBus(),
+          new MemoryDocEventBus(),
           server.client()
         ).start();
         const doc = new YDoc({ guid: 'a' });
@@ -179,7 +179,7 @@ describe('sync', () => {
       (async () => {
         const engine = new DocEngine(
           new MemoryStorage(),
-          new MemoryEventBus(),
+          new MemoryDocEventBus(),
           server.client()
         ).start();
         const doc = new YDoc({ guid: 'a' });
@@ -196,7 +196,7 @@ describe('sync', () => {
   test('2 client share storage and eventBus (simulate different tabs in same browser)', async () => {
     const server = new MiniServer();
     const storage = new MemoryStorage();
-    const eventBus = new MemoryEventBus();
+    const eventBus = new MemoryDocEventBus();
 
     await Promise.all([
       (async () => {
@@ -242,7 +242,7 @@ describe('sync', () => {
 
     const engine = new DocEngine(
       storage,
-      new MemoryEventBus(),
+      new MemoryDocEventBus(),
       server.client()
     ).start();
     const doc = new YDoc({ guid: 'a' });

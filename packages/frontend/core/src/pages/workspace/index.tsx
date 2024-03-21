@@ -70,8 +70,8 @@ export const Component = (): ReactElement => {
   }, [meta, workspaceManager, workspace, currentWorkspaceService]);
 
   //  avoid doing operation, before workspace is loaded
-  const isRootDocLoaded =
-    useLiveData(workspace?.engine.doc.docState(workspace?.id))?.ready ?? false;
+  const isRootDocReady =
+    useLiveData(workspace?.engine.rootDocState)?.ready ?? false;
 
   // if listLoading is false, we can show 404 page, otherwise we should show loading page.
   if (listLoading === false && meta === undefined) {
@@ -82,7 +82,7 @@ export const Component = (): ReactElement => {
     return <WorkspaceFallback key="workspaceLoading" />;
   }
 
-  if (!isRootDocLoaded) {
+  if (!isRootDocReady) {
     return (
       <ServiceProviderContext.Provider value={workspace.services}>
         <WorkspaceFallback key="workspaceLoading" />

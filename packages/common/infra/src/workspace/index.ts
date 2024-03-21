@@ -24,9 +24,9 @@ import {
   AwarenessProvider,
   BlobEngine,
   DocEngine,
-  DocEngineEventBusImpl,
-  DocEngineServerImpl,
-  DocEngineStorageImpl,
+  DocEventBusImpl,
+  DocServerImpl,
+  DocStorageImpl,
   LocalBlobStorage,
   RemoteBlobStorage,
   WorkspaceEngine,
@@ -64,15 +64,19 @@ export function configureWorkspaceServices(services: ServiceCollection) {
       WorkspaceUpgradeController,
       ServiceProvider,
     ])
-    .add(WorkspaceEngine, [BlobEngine, DocEngine, AwarenessEngine])
+    .add(WorkspaceEngine, [
+      BlobEngine,
+      DocEngine,
+      AwarenessEngine,
+      RootYDocContext,
+    ])
     .add(AwarenessEngine, [[AwarenessProvider]])
     .add(BlobEngine, [LocalBlobStorage, [RemoteBlobStorage]])
     .addImpl(DocEngine, services => {
       return new DocEngine(
-        services.get(DocEngineStorageImpl),
-        services.get(DocEngineEventBusImpl),
-        services.getOptional(DocEngineServerImpl),
-        services.get(RootYDocContext)
+        services.get(DocStorageImpl),
+        services.get(DocEventBusImpl),
+        services.getOptional(DocServerImpl)
       );
     })
     .add(WorkspaceUpgradeController, [

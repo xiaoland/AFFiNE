@@ -1,4 +1,4 @@
-import type { DocEngineEvent, DocEngineEventBus } from '@toeverything/infra';
+import type { DocEvent, DocEventBus } from '@toeverything/infra';
 
 type LegacyChannelMessage = {
   type: 'db-updated';
@@ -9,7 +9,7 @@ type LegacyChannelMessage = {
   __from_new_doc_engine?: boolean;
 };
 
-export class BroadcastChannelDocEngineEventBus implements DocEngineEventBus {
+export class BroadcastChannelDocEventBus implements DocEventBus {
   legacyChannel = new BroadcastChannel('indexeddb:' + this.workspaceId);
   senderChannel = new BroadcastChannel('doc:' + this.workspaceId);
   constructor(private readonly workspaceId: string) {
@@ -29,7 +29,7 @@ export class BroadcastChannelDocEngineEventBus implements DocEngineEventBus {
       }
     );
   }
-  emit(event: DocEngineEvent): void {
+  emit(event: DocEvent): void {
     if (
       event.type === 'ClientUpdateCommitted' ||
       event.type === 'ServerUpdateCommitted'
@@ -46,8 +46,8 @@ export class BroadcastChannelDocEngineEventBus implements DocEngineEventBus {
     this.senderChannel.postMessage(event);
   }
 
-  on(cb: (event: DocEngineEvent) => void): () => void {
-    const listener = (event: MessageEvent<DocEngineEvent>) => {
+  on(cb: (event: DocEvent) => void): () => void {
+    const listener = (event: MessageEvent<DocEvent>) => {
       cb(event.data);
     };
     const channel = new BroadcastChannel('doc:' + this.workspaceId);

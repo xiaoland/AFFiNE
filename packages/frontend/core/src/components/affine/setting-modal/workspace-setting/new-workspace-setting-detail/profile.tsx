@@ -31,9 +31,7 @@ export const ProfilePanel = ({ isOwner, workspace }: ProfilePanelProps) => {
   const t = useAFFiNEI18N();
   const pushNotification = useSetAtom(pushNotificationAtom);
 
-  const workspaceIsLoading = !useLiveData(
-    workspace?.engine.doc.docState(workspace.id)
-  )?.ready;
+  const workspaceIsReady = useLiveData(workspace?.engine.rootDocState)?.ready;
 
   const [avatarBlob, setAvatarBlob] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -153,7 +151,7 @@ export const ProfilePanel = ({ isOwner, workspace }: ProfilePanelProps) => {
     [pushNotification, setWorkspaceAvatar]
   );
 
-  const canAdjustAvatar = !workspaceIsLoading && avatarUrl && isOwner;
+  const canAdjustAvatar = workspaceIsReady && avatarUrl && isOwner;
 
   return (
     <div className={style.profileWrapper}>
@@ -189,7 +187,7 @@ export const ProfilePanel = ({ isOwner, workspace }: ProfilePanelProps) => {
         <div className={style.label}>{t['Workspace Name']()}</div>
         <FlexWrapper alignItems="center" flexGrow="1">
           <Input
-            disabled={workspaceIsLoading || !isOwner}
+            disabled={!workspaceIsReady || !isOwner}
             value={input}
             style={{ width: 280, height: 32 }}
             data-testid="workspace-name-input"

@@ -27,4 +27,12 @@ export class WorkspaceLocalStateImpl implements WorkspaceLocalState {
   set<T>(key: string, value: T | null): void {
     return this.wrapped.set<T>(key, value);
   }
+
+  del(key: string): void {
+    return this.wrapped.del(key);
+  }
+
+  clear(): void {
+    return this.wrapped.clear();
+  }
 }

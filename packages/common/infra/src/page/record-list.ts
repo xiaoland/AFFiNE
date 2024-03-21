@@ -31,9 +31,9 @@ export class PageRecordList {
     []
   );
 
-  public readonly isReady = this.workspace.engine.doc
-    .docState(this.workspace.id)
-    .map(state => !state.syncing);
+  public readonly isReady = this.workspace.engine.rootDocState.map(
+    state => !state.syncing
+  );
 
   public record(id: string) {
     return this.records.map(record => record.find(record => record.id === id));

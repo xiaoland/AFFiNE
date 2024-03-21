@@ -1,4 +1,4 @@
-export type Event =
+export type DocEvent =
   | {
       type: 'ClientUpdateCommitted';
       clientId: string;
@@ -18,14 +18,14 @@ export type Event =
       update: Uint8Array;
     };
 
-export interface EventBus {
-  emit(event: Event): void;
-  on(cb: (event: Event) => void): () => void;
+export interface DocEventBus {
+  emit(event: DocEvent): void;
+  on(cb: (event: DocEvent) => void): () => void;
 }
 
-export class MemoryEventBus implements EventBus {
-  listeners = new Set<(event: Event) => void>();
-  emit(event: Event): void {
+export class MemoryDocEventBus implements DocEventBus {
+  listeners = new Set<(event: DocEvent) => void>();
+  emit(event: DocEvent): void {
     for (const listener of this.listeners) {
       try {
         listener(event);
@@ -34,7 +34,7 @@ export class MemoryEventBus implements EventBus {
       }
     }
   }
-  on(cb: (event: Event) => void): () => void {
+  on(cb: (event: DocEvent) => void): () => void {
     this.listeners.add(cb);
     return () => {
       this.listeners.delete(cb);
@@ -42,14 +42,14 @@ export class MemoryEventBus implements EventBus {
   }
 }
 
-export class EventBusInner implements EventBus {
-  constructor(private readonly eventBusBehavior: EventBus) {}
+export class DocEventBusInner implements DocEventBus {
+  constructor(private readonly eventBusBehavior: DocEventBus) {}
 
-  emit(event: Event) {
+  emit(event: DocEvent) {
     this.eventBusBehavior.emit(event);
   }
 
-  on(cb: (event: Event) => void) {
+  on(cb: (event: DocEvent) => void) {
     return this.eventBusBehavior.on(cb);
   }
 }

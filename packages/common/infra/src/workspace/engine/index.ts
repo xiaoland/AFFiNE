@@ -1,4 +1,5 @@
 import { Slot } from '@blocksuite/global/utils';
+import type { Doc as YDoc } from 'yjs';
 
 import { throwIfAborted } from '../../utils/throw-if-aborted';
 import type { AwarenessEngine } from './awareness';
@@ -30,7 +31,8 @@ export class WorkspaceEngine {
   constructor(
     public blob: BlobEngine,
     public doc: DocEngine,
-    public awareness: AwarenessEngine
+    public awareness: AwarenessEngine,
+    private readonly yDoc: YDoc
   ) {
     this._status = {
       blob: blob.status,
@@ -40,6 +42,7 @@ export class WorkspaceEngine {
         blob: status,
       };
     });
+    this.doc.addDoc(yDoc);
   }
 
   start() {
@@ -62,6 +65,18 @@ export class WorkspaceEngine {
     this.doc.stop();
     this.awareness.disconnect();
     this.blob.stop();
+  }
+
+  docEngineState = this.doc.engineState;
+
+  rootDocState = this.doc.docState(this.yDoc.guid);
+
+  waitForSynced() {
+    return this.doc.waitForSynced();
+  }
+
+  waitForRootDocReady() {
+    return this.doc.waitForReady(this.yDoc.guid);
   }
 }
 

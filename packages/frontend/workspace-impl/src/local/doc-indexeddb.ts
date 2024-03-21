@@ -1,8 +1,4 @@
-import type {
-  ByteKV,
-  ByteKVBehavior,
-  DocEngineStorage,
-} from '@toeverything/infra';
+import type { ByteKV, ByteKVBehavior, DocStorage } from '@toeverything/infra';
 import {
   type DBSchema,
   type IDBPDatabase,
@@ -18,7 +14,7 @@ function isEmptyUpdate(binary: Uint8Array) {
   );
 }
 
-export class IndexedDBDocStorage implements DocEngineStorage {
+export class IndexedDBDocStorage implements DocStorage {
   constructor(private readonly workspaceId: string) {}
   readonly doc = new Doc();
   readonly syncMetadata = new KV(`${this.workspaceId}:sync-metadata`);
@@ -38,7 +34,7 @@ interface DocDBSchema extends DBSchema {
   };
 }
 
-type DocType = DocEngineStorage['doc'];
+type DocType = DocStorage['doc'];
 class Doc implements DocType {
   dbName = 'affine-local';
   dbPromise: Promise<IDBPDatabase<DocDBSchema>> | null = null;
@@ -100,6 +96,14 @@ class Doc implements DocType {
     return store.getAllKeys();
   }
 
+  clear(): void | Promise<void> {
+    return;
+  }
+
+  del(_key: string): void | Promise<void> {
+    return;
+  }
+
   async transaction<T>(
     cb: (transaction: ByteKVBehavior) => Promise<T>
   ): Promise<T> {
@@ -129,6 +133,12 @@ class Doc implements DocType {
           id: docId,
           updates: rows,
         });
+      },
+      async clear() {
+        return await store.clear();
+      },
+      async del(key) {
+        return store.delete(key);
       },
     });
   }
@@ -185,6 +195,16 @@ class KV implements ByteKV {
     const store = db.transaction('kv', 'readwrite').objectStore('kv');
     return new KVBehavior(store).keys();
   }
+  async clear() {
+    const db = await this.getDb();
+    const store = db.transaction('kv', 'readwrite').objectStore('kv');
+    return new KVBehavior(store).clear();
+  }
+  async del(key: string) {
+    const db = await this.getDb();
+    const store = db.transaction('kv', 'readwrite').objectStore('kv');
+    return new KVBehavior(store).del(key);
+  }
 }
 
 class KVBehavior implements ByteKVBehavior {
@@ -206,5 +226,18 @@ class KVBehavior implements ByteKVBehavior {
   }
   async keys(): Promise<string[]> {
     return await this.store.getAllKeys();
+  }
+  async del(key: string) {
+    if (this.store.delete === undefined) {
+      throw new Error('Cannot set in a readonly transaction');
+    }
+    return await this.store.delete(key);
+  }
+
+  async clear() {
+    if (this.store.clear === undefined) {
+      throw new Error('Cannot set in a readonly transaction');
+    }
+    return await this.store.clear();
   }
 }

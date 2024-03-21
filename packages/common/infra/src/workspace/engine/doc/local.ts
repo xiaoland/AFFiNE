@@ -8,8 +8,8 @@ import { applyUpdate, encodeStateAsUpdate, mergeUpdates } from 'yjs';
 import { LiveData } from '../../../livedata';
 import { throwIfAborted } from '../../../utils';
 import { AsyncPriorityQueue } from './async-priority-queue';
-import type { Event, EventBusInner } from './event';
-import type { StorageInner } from './storage';
+import type { DocEvent, DocEventBusInner } from './event';
+import type { DocStorageInner } from './storage';
 import { isEmptyUpdate } from './utils';
 
 type Job =
@@ -97,8 +97,8 @@ export class DocEngineLocalPart {
 
   constructor(
     private readonly clientId: string,
-    private readonly storage: StorageInner,
-    private readonly eventBus: EventBusInner
+    private readonly storage: DocStorageInner,
+    private readonly eventBus: DocEventBusInner
   ) {}
 
   async mainLoop(signal?: AbortSignal) {
@@ -234,7 +234,7 @@ export class DocEngineLocalPart {
   };
 
   readonly events: {
-    [key in Event['type']]?: (event: Event & { type: key }) => void;
+    [key in DocEvent['type']]?: (event: DocEvent & { type: key }) => void;
   } = {
     ServerUpdateCommitted: ({ docId, update, clientId }) => {
       this.schedule({

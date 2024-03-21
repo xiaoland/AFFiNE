@@ -7,9 +7,9 @@ import { LiveData } from '../../../livedata';
 import { throwIfAborted } from '../../../utils';
 import { AsyncPriorityQueue } from './async-priority-queue';
 import { ClockMap } from './clock';
-import type { Event, EventBusInner } from './event';
-import type { Server } from './server';
-import type { StorageInner } from './storage';
+import type { DocEvent, DocEventBusInner } from './event';
+import type { DocServer } from './server';
+import type { DocStorageInner } from './storage';
 import { isEmptyUpdate } from './utils';
 
 const logger = new DebugLogger('doc-engine:remote');
@@ -67,9 +67,9 @@ export class DocEngineRemotePart {
 
   constructor(
     private readonly clientId: string,
-    private readonly storage: StorageInner,
-    private readonly server: Server,
-    private readonly eventBus: EventBusInner
+    private readonly storage: DocStorageInner,
+    private readonly server: DocServer,
+    private readonly eventBus: DocEventBusInner
   ) {}
 
   private status: Status = {
@@ -338,7 +338,7 @@ export class DocEngineRemotePart {
   };
 
   readonly events: {
-    [key in Event['type']]?: (event: Event & { type: key }) => void;
+    [key in DocEvent['type']]?: (event: DocEvent & { type: key }) => void;
   } = {
     ClientUpdateCommitted: ({ clientId, docId, seqNum, update }) => {
       if (clientId !== this.clientId) {

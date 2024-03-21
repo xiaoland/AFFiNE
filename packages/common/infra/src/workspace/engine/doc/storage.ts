@@ -8,7 +8,7 @@ import {
 import { AsyncLock, mergeUpdates, throwIfAborted } from '../../../utils';
 import { isEmptyUpdate } from './utils';
 
-export interface Storage {
+export interface DocStorage {
   doc: ByteKV;
   syncMetadata: ByteKV;
   serverClock: ByteKV;
@@ -36,8 +36,8 @@ const Values = {
   },
 };
 
-export class StorageInner {
-  constructor(public readonly behavior: Storage) {}
+export class DocStorageInner {
+  constructor(public readonly behavior: DocStorage) {}
 
   async loadServerClock(signal?: AbortSignal): Promise<Map<string, number>> {
     throwIfAborted(signal);
@@ -212,9 +212,17 @@ export class StorageInner {
 
     return await this.saveDocSeqNum(docId, true);
   }
+
+  clearSyncMetadata() {
+    return this.behavior.syncMetadata.clear();
+  }
+
+  async clearServerClock() {
+    return this.behavior.serverClock.clear();
+  }
 }
 
-export class ReadonlyStorage implements Storage {
+export class ReadonlyStorage implements DocStorage {
   constructor(
     private readonly map: {
       [key: string]: Uint8Array;
@@ -226,7 +234,7 @@ export class ReadonlyStorage implements Storage {
   syncMetadata = new ReadonlyByteKV();
 }
 
-export class MemoryStorage implements Storage {
+export class MemoryStorage implements DocStorage {
   constructor(private readonly memo: Memento = new MemoryMemento()) {}
 
   lock = new AsyncLock();
@@ -247,6 +255,12 @@ export class MemoryStorage implements Storage {
         keys: async () => {
           return Array.from(this.docDb.keys());
         },
+        clear: () => {
+          this.docDb.clear();
+        },
+        del: key => {
+          this.docDb.del(key);
+        },
       });
     },
     get(key) {
@@ -257,6 +271,12 @@ export class MemoryStorage implements Storage {
     },
     keys() {
       return this.transaction(async tx => tx.keys());
+    },
+    clear() {
+      return this.transaction(async tx => tx.clear());
+    },
+    del(key) {
+      return this.transaction(async tx => tx.del(key));
     },
   } satisfies ByteKV;
 
@@ -273,6 +293,12 @@ export class MemoryStorage implements Storage {
         keys: async () => {
           return Array.from(this.syncMetadataDb.keys());
         },
+        clear: () => {
+          this.syncMetadataDb.clear();
+        },
+        del: key => {
+          this.syncMetadataDb.del(key);
+        },
       });
     },
     get(key) {
@@ -283,6 +309,12 @@ export class MemoryStorage implements Storage {
     },
     keys() {
       return this.transaction(async tx => tx.keys());
+    },
+    clear() {
+      return this.transaction(async tx => tx.clear());
+    },
+    del(key) {
+      return this.transaction(async tx => tx.del(key));
     },
   } satisfies ByteKV;
 
@@ -299,6 +331,12 @@ export class MemoryStorage implements Storage {
         keys: async () => {
           return Array.from(this.serverClockDb.keys());
         },
+        clear: () => {
+          this.serverClockDb.clear();
+        },
+        del: key => {
+          this.serverClockDb.del(key);
+        },
       });
     },
     get(key) {
@@ -309,6 +347,12 @@ export class MemoryStorage implements Storage {
     },
     keys() {
       return this.transaction(async tx => tx.keys());
+    },
+    clear() {
+      return this.transaction(async tx => tx.clear());
+    },
+    del(key) {
+      return this.transaction(async tx => tx.del(key));
     },
   } satisfies ByteKV;
 }

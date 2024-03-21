@@ -40,6 +40,16 @@ export class LocalStorageMemento implements Memento {
     channel.postMessage(value);
     channel.close();
   }
+
+  del(key: string): void {
+    localStorage.removeItem(this.prefix + key);
+  }
+
+  clear(): void {
+    for (const key of this.keys()) {
+      this.del(key);
+    }
+  }
 }
 
 export class LocalStorageGlobalCache
